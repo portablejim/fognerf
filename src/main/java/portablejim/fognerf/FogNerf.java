@@ -15,7 +15,6 @@ public class FogNerf implements IFMLLoadingPlugin {
     public void init(FMLInitializationEvent event)
     {
 		// some example code
-        System.out.println("DIRT BLOCK >> "+Block.dirt.getUnlocalizedName());
     }
 
     @Override
@@ -31,11 +30,14 @@ public class FogNerf implements IFMLLoadingPlugin {
 
     @Override
     public String getSetupClass() {
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
+        return null;
     }
 
     @Override
-    public void injectData(Map<String, Object> data) {
-        //To change body of implemented methods use File | Settings | File Templates.
+    public void injectData(Map<String, Object> data) { }
+
+    @Override
+    public String getAccessTransformerClass() {
+        return null;
     }
 }
