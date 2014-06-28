@@ -1,0 +1,15 @@
+[
+{
+  "modid": "fognerf",
+  "name": "Fog Nerf",
+  "description": "Reduces water and lava fog. Removes void fog.",
+  "version": "${version}",
+  "mcversion": "${mcversion}",
+  "url": "",
+  "updateUrl": "",
+  "authors": ["Portablejim"],
+  "logoFile": "",
+  "screenshots": [],
+  "dependencies": []
+}
+]
