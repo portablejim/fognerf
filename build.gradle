@@ -46,6 +46,6 @@ processResources
 
 jar {
     manifest {
-        attributes 'FMLCorePlugin': 'portablejim.fognerf.FogNerf'
+        attributes 'FMLCorePlugin': 'portablejim.fognerf.FogNerfCoremod'
     }
 }

@@ -11,13 +11,7 @@ import org.objectweb.asm.tree.*;
 
 import java.util.HashMap;
 
-/**
- * Created with IntelliJ IDEA.
- * User: james
- * Date: 12/02/14
- * Time: 5:16 PM
- * To change this template use File | Settings | File Templates.
- */
+@SuppressWarnings("UnusedDeclaration")
 public class EntityRendererTransformer implements IClassTransformer {
     boolean obfuscated;
     HashMap<String, String> srgMap;
@@ -88,7 +82,8 @@ public class EntityRendererTransformer implements IClassTransformer {
         testIfZero.add(new MethodInsnNode(getRespirationCall.getOpcode(), getRespirationCall.owner, getRespirationCall.name, getRespirationCall.desc));
         testIfZero.add(new JumpInsnNode(Opcodes.IFNE, jump.label));
         testIfZero.add(new IntInsnNode(Opcodes.SIPUSH, GL11.GL_FOG_DENSITY));
-        testIfZero.add(new LdcInsnNode(new Float("0.01")));
+        testIfZero.add(new FieldInsnNode(Opcodes.GETSTATIC, "portablejim/fognerf/FogNerf", "instance", "Lportablejim/fognerf/FogNerf;"));
+        testIfZero.add(new MethodInsnNode(Opcodes.INVOKEVIRTUAL, "portablejim/fognerf/FogNerf", "waterFog", "()F"));
         testIfZero.add(new MethodInsnNode(Opcodes.INVOKESTATIC, "org/lwjgl/opengl/GL11", "glFogf", "(IF)V"));
         methodNode.instructions.insertBefore(methodNode.instructions.get(i), testIfZero);
 
@@ -104,7 +99,10 @@ public class EntityRendererTransformer implements IClassTransformer {
         }
 
         methodNode.instructions.remove(methodNode.instructions.get(i+1));
-        methodNode.instructions.insert(methodNode.instructions.get(i), new LdcInsnNode(new Float("0.3")));
+        InsnList lava = new InsnList();
+        lava.add(new FieldInsnNode(Opcodes.GETSTATIC, "portablejim/fognerf/FogNerf", "instance", "Lportablejim/fognerf/FogNerf;"));
+        lava.add(new MethodInsnNode(Opcodes.INVOKEVIRTUAL, "portablejim/fognerf/FogNerf", "lavaFog", "()F"));
+        methodNode.instructions.insert(methodNode.instructions.get(i), lava);
         i++;
 
         while(methodNode.instructions.get(i).getOpcode() != Opcodes.GETFIELD || !isFieldWithName(methodNode.instructions.get(i), "farPlaneDistance")) {
@@ -119,8 +117,11 @@ public class EntityRendererTransformer implements IClassTransformer {
         }
 
         InsnList setF1Value = new InsnList();
+        setF1Value.add(new FieldInsnNode(Opcodes.GETSTATIC, "portablejim/fognerf/FogNerf", "instance", "Lportablejim/fognerf/FogNerf;"));
         setF1Value.add(new VarInsnNode(Opcodes.ALOAD, 0));
         setF1Value.add(new FieldInsnNode(fieldCall.getOpcode(), fieldCall.owner, fieldCall.name, fieldCall.desc));
+        setF1Value.add(new VarInsnNode(Opcodes.FLOAD, fieldStore.var));
+        setF1Value.add(new MethodInsnNode(Opcodes.INVOKEVIRTUAL, "portablejim/fognerf/FogNerf", "voidFog", "(FF)F"));
         setF1Value.add(new VarInsnNode(fieldStore.getOpcode(), fieldStore.var));
         methodNode.instructions.insert(methodNode.instructions.get(i), setF1Value);
     }
