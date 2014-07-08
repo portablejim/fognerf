@@ -28,7 +28,9 @@ public class EntityRendererTransformer implements IClassTransformer {
     public byte[] transform(String name, String transformedName, byte[] basicClass) {
         if("net.minecraft.client.renderer.EntityRenderer".equals(transformedName)) {
             obfuscated = !transformedName.equals(name);
+            FMLLog.getLogger().debug("FogNerf: Transforming net.minecraft.client.renderer.EntityRenderer");
             basicClass = transformSetupFog(name, basicClass);
+            FMLLog.getLogger().debug("FogNerf: Finished transforming net.minecraft.client.renderer.EntityRenderer");
         }
         return basicClass;  //To change body of implemented methods use File | Settings | File Templates.
     }
@@ -57,6 +59,8 @@ public class EntityRendererTransformer implements IClassTransformer {
     }
 
     private void doTransformSetupFog(String name, MethodNode methodNode) {
+        FMLLog.getLogger().debug("FogNerf: Transforming net.minecraft.client.renderer.EntityRenderer.setupFog()");
+
         int i = 0;
         while(!isMethodWithName(methodNode.instructions.get(i), "getRespiration")) {
             i++;
@@ -124,6 +128,8 @@ public class EntityRendererTransformer implements IClassTransformer {
         setF1Value.add(new MethodInsnNode(Opcodes.INVOKEVIRTUAL, "portablejim/fognerf/FogNerf", "voidFog", "(FF)F"));
         setF1Value.add(new VarInsnNode(fieldStore.getOpcode(), fieldStore.var));
         methodNode.instructions.insert(methodNode.instructions.get(i), setF1Value);
+
+        FMLLog.getLogger().debug("FogNerf: Finished transforming net.minecraft.client.renderer.EntityRenderer.setupFog()");
     }
 
     private String getCorrectName(String name) {
@@ -143,7 +149,6 @@ public class EntityRendererTransformer implements IClassTransformer {
         if(instruction.getType() == AbstractInsnNode.FIELD_INSN) {
             FieldInsnNode fieldNode = (FieldInsnNode) instruction;
             String srgName = FMLDeobfuscatingRemapper.INSTANCE.mapFieldName(fieldNode.owner, fieldNode.name, fieldNode.desc);
-            FMLLog.info("FOGNERF: %s | %s", srgName, name);
             return srgName.equals(getCorrectName(name));
         }
         return false;
