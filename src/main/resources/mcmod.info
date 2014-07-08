@@ -1,15 +1,18 @@
 [
 {
-  "modid": "fognerf",
-  "name": "Fog Nerf",
-  "description": "Reduces water and lava fog. Removes void fog.",
-  "version": "${version}",
-  "mcversion": "${mcversion}",
-  "url": "",
-  "updateUrl": "",
-  "authors": ["Portablejim"],
-  "logoFile": "",
-  "screenshots": [],
-  "dependencies": []
+    "modid": "fognerf",
+    "name": "Fog Nerf",
+    "description": "Reduces water and lava fog. Removes void fog.",
+    "version": "${version}",
+    "mcversion": "${mcversion}",
+    "url": "http://minecraft.curseforge.com/mc-mods/221849-fognerf",
+    "updateUrl": "",
+    "authors": ["Portablejim"],
+    "logoFile": "/logo.png",
+    "screenshots": [],
+    "requiredMods": [ "Forge@[10.13,10.14)" ],
+    "dependencies": [],
+    "dependants": [],
+    "useDependencyInformation": true
 }
 ]
