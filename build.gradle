@@ -18,12 +18,12 @@ buildscript {
 
 apply plugin: 'forge'
 
-version = "1.7-0.2"
+version = "1.7.10-0.3"
 group= "portablejim.fognerf" // http://maven.apache.org/guides/mini/guide-naming-conventions.html
 archivesBaseName = "fognerf"
 
 minecraft {
-	version = "1.7.10-10.13.0.1152"
+	version = "1.7.10-10.13.0.1160"
 }
 
 processResources
@@ -47,5 +47,6 @@ processResources
 jar {
     manifest {
         attributes 'FMLCorePlugin': 'portablejim.fognerf.FogNerfCoremod'
+        attributes 'FMLCorePluginContainsFMLMod': 'true'
     }
 }
