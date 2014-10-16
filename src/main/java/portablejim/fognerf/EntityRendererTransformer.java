@@ -101,12 +101,12 @@ public class EntityRendererTransformer implements IClassTransformer {
 
         InsnList testIfZero = new InsnList();
         testIfZero.add(new VarInsnNode(variableCall.getOpcode(), variableCall.var));
-        testIfZero.add(new MethodInsnNode(getRespirationCall.getOpcode(), getRespirationCall.owner, getRespirationCall.name, getRespirationCall.desc));
+        testIfZero.add(new MethodInsnNode(getRespirationCall.getOpcode(), getRespirationCall.owner, getRespirationCall.name, getRespirationCall.desc, false));
         testIfZero.add(new JumpInsnNode(Opcodes.IFNE, jump.label));
         testIfZero.add(new IntInsnNode(Opcodes.SIPUSH, GL11.GL_FOG_DENSITY));
         testIfZero.add(new FieldInsnNode(Opcodes.GETSTATIC, "portablejim/fognerf/FogNerf", "instance", "Lportablejim/fognerf/FogNerf;"));
-        testIfZero.add(new MethodInsnNode(Opcodes.INVOKEVIRTUAL, "portablejim/fognerf/FogNerf", "waterFog", "()F"));
-        testIfZero.add(new MethodInsnNode(Opcodes.INVOKESTATIC, "org/lwjgl/opengl/GL11", "glFogf", "(IF)V"));
+        testIfZero.add(new MethodInsnNode(Opcodes.INVOKEVIRTUAL, "portablejim/fognerf/FogNerf", "waterFog", "()F", false));
+        testIfZero.add(new MethodInsnNode(Opcodes.INVOKESTATIC, "org/lwjgl/opengl/GL11", "glFogf", "(IF)V", false));
         methodNode.instructions.insertBefore(methodNode.instructions.get(i), testIfZero);
 
         i += 8;
@@ -123,7 +123,7 @@ public class EntityRendererTransformer implements IClassTransformer {
         methodNode.instructions.remove(methodNode.instructions.get(i+1));
         InsnList lava = new InsnList();
         lava.add(new FieldInsnNode(Opcodes.GETSTATIC, "portablejim/fognerf/FogNerf", "instance", "Lportablejim/fognerf/FogNerf;"));
-        lava.add(new MethodInsnNode(Opcodes.INVOKEVIRTUAL, "portablejim/fognerf/FogNerf", "lavaFog", "()F"));
+        lava.add(new MethodInsnNode(Opcodes.INVOKEVIRTUAL, "portablejim/fognerf/FogNerf", "lavaFog", "()F", false));
         methodNode.instructions.insert(methodNode.instructions.get(i), lava);
         i++;
 
@@ -143,7 +143,7 @@ public class EntityRendererTransformer implements IClassTransformer {
         setF1Value.add(new VarInsnNode(Opcodes.ALOAD, 0));
         setF1Value.add(new FieldInsnNode(fieldCall.getOpcode(), fieldCall.owner, fieldCall.name, fieldCall.desc));
         setF1Value.add(new VarInsnNode(Opcodes.FLOAD, fieldStore.var));
-        setF1Value.add(new MethodInsnNode(Opcodes.INVOKEVIRTUAL, "portablejim/fognerf/FogNerf", "voidFog", "(FF)F"));
+        setF1Value.add(new MethodInsnNode(Opcodes.INVOKEVIRTUAL, "portablejim/fognerf/FogNerf", "voidFog", "(FF)F", false));
         setF1Value.add(new VarInsnNode(fieldStore.getOpcode(), fieldStore.var));
         methodNode.instructions.insert(methodNode.instructions.get(i), setF1Value);
 
@@ -162,14 +162,14 @@ public class EntityRendererTransformer implements IClassTransformer {
         }
 
         InsnList setNetherFog = new InsnList();
-        setNetherFog.add(new MethodInsnNode(Opcodes.INVOKESTATIC, "portablejim/fognerf/FogNerf", "enableNetherFog", "()Z"));
+        setNetherFog.add(new MethodInsnNode(Opcodes.INVOKESTATIC, "portablejim/fognerf/FogNerf", "enableNetherFog", "()Z", false));
         setNetherFog.add(new JumpInsnNode(Opcodes.IFEQ, netherJump.label));
         setNetherFog.add(new IntInsnNode(Opcodes.SIPUSH, GL11.GL_FOG_START));
-        setNetherFog.add(new MethodInsnNode(Opcodes.INVOKESTATIC, "portablejim/fognerf/FogNerf", "getNetherFogStart", "()F"));
-        setNetherFog.add(new MethodInsnNode(Opcodes.INVOKESTATIC, "org/lwjgl/opengl/GL11", "glFogf", "(IF)V"));
+        setNetherFog.add(new MethodInsnNode(Opcodes.INVOKESTATIC, "portablejim/fognerf/FogNerf", "getNetherFogStart", "()F", false));
+        setNetherFog.add(new MethodInsnNode(Opcodes.INVOKESTATIC, "org/lwjgl/opengl/GL11", "glFogf", "(IF)V", false));
         setNetherFog.add(new IntInsnNode(Opcodes.SIPUSH, GL11.GL_FOG_END));
-        setNetherFog.add(new MethodInsnNode(Opcodes.INVOKESTATIC, "portablejim/fognerf/FogNerf", "getNetherFogEnd", "()F"));
-        setNetherFog.add(new MethodInsnNode(Opcodes.INVOKESTATIC, "org/lwjgl/opengl/GL11", "glFogf", "(IF)V"));
+        setNetherFog.add(new MethodInsnNode(Opcodes.INVOKESTATIC, "portablejim/fognerf/FogNerf", "getNetherFogEnd", "()F", false));
+        setNetherFog.add(new MethodInsnNode(Opcodes.INVOKESTATIC, "org/lwjgl/opengl/GL11", "glFogf", "(IF)V", false));
         methodNode.instructions.insert(methodNode.instructions.get(i), setNetherFog);
 
         FMLLog.getLogger().debug("FogNerf: Finished transforming net.minecraft.client.renderer.EntityRenderer.setupFog()");
