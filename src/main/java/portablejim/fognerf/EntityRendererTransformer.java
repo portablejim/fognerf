@@ -16,6 +16,24 @@ public class EntityRendererTransformer implements IClassTransformer {
     boolean obfuscated;
     HashMap<String, String> srgMap;
 
+    public static MethodInsnNode methodInstruction(MethodNode method, int i) {
+        return (MethodInsnNode)method.instructions.get(i);
+    }
+
+    public static boolean methodIsNot(MethodNode methodNode, int number, int type, String className, String methodName){
+        AbstractInsnNode abstractMethod = methodNode.instructions.get(number);
+
+        if(!(abstractMethod instanceof MethodInsnNode)) {
+            return true;
+        }
+
+        MethodInsnNode method = (MethodInsnNode) abstractMethod;
+        boolean isMethod = method.getOpcode() == type
+                && (className.isEmpty() || method.owner.equals(className))
+                && method.name.equals(methodName);
+        return !isMethod;
+    }
+
     public EntityRendererTransformer() {
         srgMap = new HashMap<String, String>();
         srgMap.put("setupFog", "func_78468_a");
@@ -128,6 +146,31 @@ public class EntityRendererTransformer implements IClassTransformer {
         setF1Value.add(new MethodInsnNode(Opcodes.INVOKEVIRTUAL, "portablejim/fognerf/FogNerf", "voidFog", "(FF)F"));
         setF1Value.add(new VarInsnNode(fieldStore.getOpcode(), fieldStore.var));
         methodNode.instructions.insert(methodNode.instructions.get(i), setF1Value);
+
+        while(methodIsNot(methodNode, i, Opcodes.INVOKEVIRTUAL, "net/minecraft/world/WorldProvider", "doesXZShowFog")) {
+            i++;
+        }
+
+        i++;
+        JumpInsnNode netherJump = (JumpInsnNode) methodNode.instructions.get(i);
+
+        while(methodIsNot(methodNode, i, Opcodes.INVOKESTATIC, "java/lang/Math", "min")) {
+            i++;
+        }
+        while(methodIsNot(methodNode, i, Opcodes.INVOKESTATIC, "org/lwjgl/opengl/GL11", "glFogf")) {
+            i++;
+        }
+
+        InsnList setNetherFog = new InsnList();
+        setNetherFog.add(new MethodInsnNode(Opcodes.INVOKESTATIC, "portablejim/fognerf/FogNerf", "enableNetherFog", "()Z"));
+        setNetherFog.add(new JumpInsnNode(Opcodes.IFEQ, netherJump.label));
+        setNetherFog.add(new IntInsnNode(Opcodes.SIPUSH, GL11.GL_FOG_START));
+        setNetherFog.add(new MethodInsnNode(Opcodes.INVOKESTATIC, "portablejim/fognerf/FogNerf", "getNetherFogStart", "()F"));
+        setNetherFog.add(new MethodInsnNode(Opcodes.INVOKESTATIC, "org/lwjgl/opengl/GL11", "glFogf", "(IF)V"));
+        setNetherFog.add(new IntInsnNode(Opcodes.SIPUSH, GL11.GL_FOG_END));
+        setNetherFog.add(new MethodInsnNode(Opcodes.INVOKESTATIC, "portablejim/fognerf/FogNerf", "getNetherFogEnd", "()F"));
+        setNetherFog.add(new MethodInsnNode(Opcodes.INVOKESTATIC, "org/lwjgl/opengl/GL11", "glFogf", "(IF)V"));
+        methodNode.instructions.insert(methodNode.instructions.get(i), setNetherFog);
 
         FMLLog.getLogger().debug("FogNerf: Finished transforming net.minecraft.client.renderer.EntityRenderer.setupFog()");
     }

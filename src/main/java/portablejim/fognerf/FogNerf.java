@@ -2,6 +2,7 @@ package portablejim.fognerf;
 
 import cpw.mods.fml.client.event.ConfigChangedEvent;
 import cpw.mods.fml.common.FMLCommonHandler;
+import cpw.mods.fml.common.FMLLog;
 import cpw.mods.fml.common.Mod;
 import cpw.mods.fml.common.event.FMLPreInitializationEvent;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
@@ -17,6 +18,7 @@ public class FogNerf {
     public static boolean lavaFogNerf = true;
     public static boolean voidFogNerf = true;
     public static boolean waterFogNerf = true;
+    public static boolean netherFogNerf = true;
 
     @SuppressWarnings("UnusedDeclaration")
     @Mod.EventHandler
@@ -43,6 +45,7 @@ public class FogNerf {
         lavaFogNerf = configFile.getBoolean("Nerf lava fog", Configuration.CATEGORY_GENERAL, lavaFogNerf, "Nerf the fog in lava (i.e. enable clear lava)");
         voidFogNerf = configFile.getBoolean("Nerf void fog", Configuration.CATEGORY_GENERAL, voidFogNerf, "Nerf the void fog when at low map levels");
         waterFogNerf = configFile.getBoolean("Nerf water fog", Configuration.CATEGORY_GENERAL, waterFogNerf, "Nerf the fog in water (i.e. enable clear water)");
+        netherFogNerf = configFile.getBoolean("Nerf nether fog", Configuration.CATEGORY_GENERAL, netherFogNerf, "Nerf the fog in nether");
 
         if(configFile.hasChanged()) {
             configFile.save();
@@ -62,5 +65,21 @@ public class FogNerf {
     @SuppressWarnings("UnusedDeclaration")
     public float waterFog() {
         return waterFogNerf ? 0.01F : 0.1F;
+    }
+
+    @SuppressWarnings("UnusedDeclaration")
+    public static boolean enableNetherFog() {
+        FMLLog.getLogger().debug("FogNerf: " + netherFogNerf);
+        return netherFogNerf;
+    }
+
+    @SuppressWarnings("UnusedDeclaration")
+    public static float getNetherFogStart() {
+        return 300F;
+    }
+
+    @SuppressWarnings("UnusedDeclaration")
+    public static float getNetherFogEnd() {
+        return 500F;
     }
 }
