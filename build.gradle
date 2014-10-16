@@ -18,12 +18,12 @@ buildscript {
 
 apply plugin: 'forge'
 
-version = "1.7.10-0.3"
+version = "1.7.10-0.4"
 group= "portablejim.fognerf" // http://maven.apache.org/guides/mini/guide-naming-conventions.html
 archivesBaseName = "fognerf"
 
 minecraft {
-	version = "1.7.10-10.13.0.1160"
+	version = "1.7.10-10.13.1.1226"
 }
 
 processResources
