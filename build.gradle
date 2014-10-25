@@ -26,6 +26,12 @@ minecraft {
 	version = "1.7.10-10.13.1.1226"
 }
 
+
+String buildNumber = "unknown"
+if(System.getenv("BUILD_NUMBER") != null) {
+buildNumber = System.getenv("BUILD_NUMBER")
+}
+
 processResources
 {
     // replace stuff in mcmod.info, nothing else
@@ -48,5 +54,46 @@ jar {
     manifest {
         attributes 'FMLCorePlugin': 'portablejim.fognerf.FogNerfCoremod'
         attributes 'FMLCorePluginContainsFMLMod': 'true'
+    }
+    if(System.getenv("BUILD_NUMBER") != null) {
+        archiveName "${project.archivesBaseName}-${project.version}.${buildNumber}.jar"
+    }
+}
+
+task deobfJar(type: Jar) {
+    from sourceSets.main.output
+    classifier = 'dev'
+    if(System.getenv("BUILD_NUMBER") != null) {
+        archiveName "${project.archivesBaseName}-${project.version}.${buildNumber}-${classifier}.jar"
+    }
+}
+
+build.dependsOn deobfJar
+
+artifacts {
+    archives deobfJar
+}
+
+configurations {
+    deployerJars
+}
+
+uploadArchives {
+    dependsOn 'reobf'
+    repositories {
+        if(project.hasProperty("pushMaven")) {
+            logger.info("Pushing to maven repo")
+            mavenDeployer {
+                configuration = configurations.deployerJars
+                repository(url: "file://localhost/home/public_html/maven.jamesmckay.id.au/htdocs/")
+                pom {
+                    groupId = project.group
+                    version = project.version
+                    artifactId = project.archivesBaseName
+                    packaging = 'jar'
+                    description 'VeinMiner Mod'
+                }
+            }
+        }
     }
 }
