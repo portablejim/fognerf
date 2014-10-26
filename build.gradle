@@ -18,7 +18,7 @@ buildscript {
 
 apply plugin: 'forge'
 
-version = "1.7.10-0.4"
+version = "1.7.10-0.4.1"
 group= "portablejim.fognerf" // http://maven.apache.org/guides/mini/guide-naming-conventions.html
 archivesBaseName = "fognerf"
 
@@ -50,14 +50,17 @@ processResources
     }
 }
 
-jar {
-    manifest {
+commonManifest = manifest {
         attributes 'FMLCorePlugin': 'portablejim.fognerf.FogNerfCoremod'
         attributes 'FMLCorePluginContainsFMLMod': 'true'
     }
-    if(System.getenv("BUILD_NUMBER") != null) {
-        archiveName "${project.archivesBaseName}-${project.version}.${buildNumber}.jar"
-    }
+
+jar {
+    manifest = commonManifest
+}
+
+if(System.getenv("BUILD_NUMBER") != null) {
+    archiveName "${project.archivesBaseName}-${project.version}.${buildNumber}.jar"
 }
 
 task deobfJar(type: Jar) {

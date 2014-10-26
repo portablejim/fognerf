@@ -6,6 +6,8 @@ import cpw.mods.fml.common.FMLLog;
 import cpw.mods.fml.common.Mod;
 import cpw.mods.fml.common.event.FMLPreInitializationEvent;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
+import net.minecraft.client.Minecraft;
+import net.minecraft.potion.Potion;
 import net.minecraftforge.common.config.Configuration;
 
 @Mod(modid = "fognerf", name="FogNerf", guiFactory = "portablejim.fognerf.client.FogNerfGuiFactory")
@@ -54,7 +56,9 @@ public class FogNerf {
 
     @SuppressWarnings("UnusedDeclaration")
     public float lavaFog() {
-        return lavaFogNerf ? 0.3F : 2.0F;
+        boolean potionActive = Minecraft.getMinecraft().thePlayer.isPotionActive(Potion.nightVision);
+        float nerfedValue = potionActive ? 0.10F : 0.3F;
+        return lavaFogNerf ? nerfedValue : 2.0F;
     }
 
     @SuppressWarnings("UnusedDeclaration")
