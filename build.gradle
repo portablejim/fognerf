@@ -66,6 +66,7 @@ if(System.getenv("BUILD_NUMBER") != null) {
 task deobfJar(type: Jar) {
     from sourceSets.main.output
     classifier = 'dev'
+    manifest = commonManifest
     if(System.getenv("BUILD_NUMBER") != null) {
         archiveName "${project.archivesBaseName}-${project.version}.${buildNumber}-${classifier}.jar"
     }
